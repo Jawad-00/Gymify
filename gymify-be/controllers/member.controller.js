@@ -113,3 +113,43 @@ exports.updateFeeDate = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.getDashboardStats = async (req, res) => {
+  try {
+    const today = new Date();
+    const startOfToday = new Date(today.setHours(0, 0, 0, 0));
+    const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+
+    const allMembers = await Member.find({});
+    const totalMembers = allMembers.length;
+
+    const maleCount = allMembers.filter(m => m.gender === 'Male').length;
+    const femaleCount = allMembers.filter(m => m.gender === 'Female').length;
+
+    const todayCollectedFee = allMembers.filter(m => {
+      const feeDate = new Date(m.feeSubmissionDate);
+      return feeDate >= startOfToday;
+    }).length * 3000;
+
+    const monthlyCollectedFee = allMembers.filter(m => {
+      const feeDate = new Date(m.feeSubmissionDate);
+      return feeDate >= startOfMonth;
+    }).length * 3000;
+
+    const pastMonthsCollectedFee = allMembers.filter(m => {
+      const feeDate = new Date(m.feeSubmissionDate);
+      return feeDate < startOfMonth;
+    }).length * 3000;
+
+    res.status(200).json({
+      totalMembers,
+      maleCount,
+      femaleCount,
+      todayCollectedFee,
+      monthlyCollectedFee,
+      pastMonthsCollectedFee
+    });
+  } catch (err) {
+    console.error('Dashboard stats error:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
