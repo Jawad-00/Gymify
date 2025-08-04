@@ -14,7 +14,7 @@ export default function OverdueFees() {
     setLoading(true);
     setError("");
     try {
-      const res = await axios.get("/api/members/overdue-fees");
+      const res = await axios.get("/api/members/overdue");
       setOverdueMembers(res.data);
     } catch (err) {
       setError("Failed to load overdue members.");
