@@ -9,7 +9,8 @@ const {
   deleteMember,
   getOverdueMembers,
   updateFeeDate,
-  getDashboardStats 
+  getDashboardStats,
+  getMonthlyEarnings  
 } = require('../controllers/member.controller');
 
 const protect = require('../middleware/auth');
@@ -19,6 +20,7 @@ router.get('/', protect, getAllMembers);
 router.get('/search', protect, getMemberByNameAndPhone); 
 router.get('/overdue', protect, getOverdueMembers); 
 router.get('/stats', protect, getDashboardStats);
+router.get('/monthly-earnings', protect, getMonthlyEarnings);
 router.get('/:id', protect, getMemberById);
 router.put('/:id', protect, updateMember);
 router.delete('/:id', protect, deleteMember);

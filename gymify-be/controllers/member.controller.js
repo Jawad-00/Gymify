@@ -145,3 +145,26 @@ exports.getDashboardStats = async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 };
+exports.getMonthlyEarnings = async (req, res) => {
+  try {
+    const members = await Member.find({});
+    const monthlyEarnings = {};
+    const MONTHLY_FEE = 3000;
+
+    members.forEach(member => {
+      const date = new Date(member.feeSubmissionDate);
+      const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' }); // e.g., "July 2025"
+
+      if (monthlyEarnings[monthYear]) {
+        monthlyEarnings[monthYear] += MONTHLY_FEE;
+      } else {
+        monthlyEarnings[monthYear] = MONTHLY_FEE;
+      }
+    });
+
+    res.status(200).json(monthlyEarnings);
+  } catch (err) {
+    console.error('Error calculating monthly earnings:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
