@@ -90,3 +90,26 @@ exports.getOverdueMembers = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+// Update only the fee submission date of a member
+exports.updateFeeDate = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { feeSubmissionDate } = req.body;
+
+    const member = await Member.findById(id);
+    if (!member) {
+      return res.status(404).json({ message: 'Member not found' });
+    }
+
+    member.feeSubmissionDate = new Date(feeSubmissionDate);
+    await member.save();
+
+    res.status(200).json({
+      message: 'Fee submission date updated successfully',
+      member
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
