@@ -24,7 +24,7 @@ export default function OverdueFees() {
 
   const markFeePaidToday = async (id) => {
     try {
-      await axios.put(`/api/members/${id}/update-fee-date`, {
+      await axios.put(`/api/members/${id}/fee`, {
         feeSubmissionDate: new Date().toISOString(),
       });
       // Refresh list after update
