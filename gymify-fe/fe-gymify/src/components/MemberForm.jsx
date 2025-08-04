@@ -71,7 +71,7 @@ export default function MemberForm() {
         await axios.put(`/api/members/${id}`, formData);
       } else {
         // Add new member
-        await axios.post("/api/members", formData);
+        await axios.post("/api/members/", formData);
       }
       navigate("/members");
     } catch (err) {
