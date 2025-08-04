@@ -1,6 +1,5 @@
 const Member = require('../models/Member');
 
-// ✅ Create a new member
 exports.createMember = async (req, res) => {
   try {
     const member = await Member.create(req.body);
@@ -10,7 +9,6 @@ exports.createMember = async (req, res) => {
   }
 };
 
-// ✅ Get all members
 exports.getAllMembers = async (req, res) => {
   try {
     const members = await Member.find().sort({ createdAt: -1 });
@@ -20,7 +18,6 @@ exports.getAllMembers = async (req, res) => {
   }
 };
 
-// ✅ Get single member by ID
 exports.getMemberById = async (req, res) => {
   try {
     const member = await Member.findById(req.params.id);
@@ -31,7 +28,6 @@ exports.getMemberById = async (req, res) => {
   }
 };
 
-// ✅ Get member by name and phone
 exports.getMemberByNameAndPhone = async (req, res) => {
   const { name, phone } = req.query;
   console.log("Searching for:", name, phone); // 🔍 Debug
@@ -53,7 +49,6 @@ exports.getMemberByNameAndPhone = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-// ✅ Update a member
 exports.updateMember = async (req, res) => {
   try {
     const updated = await Member.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -64,7 +59,6 @@ exports.updateMember = async (req, res) => {
   }
 };
 
-// ✅ Delete a member
 exports.deleteMember = async (req, res) => {
   try {
     const deleted = await Member.findByIdAndDelete(req.params.id);
@@ -74,7 +68,6 @@ exports.deleteMember = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-// Get members whose fee is overdue (more than 29 days)
 exports.getOverdueMembers = async (req, res) => {
   try {
     const today = new Date();
@@ -91,7 +84,6 @@ exports.getOverdueMembers = async (req, res) => {
   }
 };
 
-// Update only the fee submission date of a member
 exports.updateFeeDate = async (req, res) => {
   try {
     const { id } = req.params;

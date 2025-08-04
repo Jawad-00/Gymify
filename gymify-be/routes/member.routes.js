@@ -14,11 +14,10 @@ const {
 
 const protect = require('../middleware/auth');
 
-// All routes are protected
 router.post('/', protect, createMember);
 router.get('/', protect, getAllMembers);
-router.get('/search', protect, getMemberByNameAndPhone); // 🔍 by name & phone
-router.get('/overdue', protect, getOverdueMembers); // 🔁 Get overdue fee members
+router.get('/search', protect, getMemberByNameAndPhone); 
+router.get('/overdue', protect, getOverdueMembers); 
 router.get('/stats', protect, getDashboardStats);
 router.get('/:id', protect, getMemberById);
 router.put('/:id', protect, updateMember);
