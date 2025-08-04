@@ -74,3 +74,19 @@ exports.deleteMember = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+// Get members whose fee is overdue (more than 29 days)
+exports.getOverdueMembers = async (req, res) => {
+  try {
+    const today = new Date();
+    const thresholdDate = new Date(today.setDate(today.getDate() - 29));
+
+    const overdueMembers = await Member.find({
+      feeSubmissionDate: { $lt: thresholdDate }
+    });
+
+    res.status(200).json(overdueMembers);
+  } catch (err) {
+    console.error('Error fetching overdue members:', err.message);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
