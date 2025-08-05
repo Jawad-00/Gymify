@@ -5,6 +5,7 @@ import MemberList from './pages/MemberList';
 import MemberForm from './components/MemberForm';
 import Overdue from './pages/Overdue';
 import AdminHome from './pages/AdminHome';
+import Navbar from './components/Navbar'; 
 import './App.css';
 
 // Reusable protected route component

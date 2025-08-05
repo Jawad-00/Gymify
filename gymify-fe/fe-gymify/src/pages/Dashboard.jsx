@@ -10,6 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import Navbar from "../components/Navbar"; // ✅ import navbar
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -30,9 +31,6 @@ export default function Dashboard() {
     const fetchMonthlyEarnings = async () => {
       try {
         const res = await axios.get("/api/members/monthly-earnings");
-        console.log("Monthly Earnings API response:", res.data);
-
-        // Transform if data is an object instead of array
         const data = res.data;
         const transformedData = Array.isArray(data)
           ? data
@@ -63,9 +61,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div>
-    <h1 className="text-3xl font-semibold mb-8 text-center">Admin Dashboard</h1>
+    <>
+      <Navbar /> {/* ✅ Add Navbar at the top */}
+      <div className="p-6 max-w-7xl mx-auto">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <StatCard
             title="Total Members"
@@ -125,7 +123,7 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
