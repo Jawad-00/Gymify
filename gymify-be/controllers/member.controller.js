@@ -73,9 +73,18 @@ exports.getOverdueMembers = async (req, res) => {
     const today = new Date();
     const thresholdDate = new Date(today.setDate(today.getDate() - 29));
 
+    // Find members whose FeeSubmissionDate is older than 29 days
     const overdueMembers = await Member.find({
-      feeSubmissionDate: { $lt: thresholdDate }
+      FeeSubmissionDate: { $lt: thresholdDate }
     });
+
+    // Update their FeeStatus to "Unpaid"
+    const overdueIds = overdueMembers.map(member => member._id);
+
+    await Member.updateMany(
+      { _id: { $in: overdueIds } },
+      { $set: { FeeStatus: 'Unpaid' } }
+    );
 
     res.status(200).json(overdueMembers);
   } catch (err) {
@@ -94,7 +103,11 @@ exports.updateFeeDate = async (req, res) => {
       return res.status(404).json({ message: 'Member not found' });
     }
 
-    member.feeSubmissionDate = new Date(feeSubmissionDate);
+    const newDate = new Date(feeSubmissionDate);
+    member.FeeSubmissionDate = newDate;
+    member.lastFeeSubmissionDate = newDate;
+    member.FeeStatus = "Paid"; 
+
     await member.save();
 
     res.status(200).json({
@@ -105,6 +118,7 @@ exports.updateFeeDate = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 exports.getDashboardStats = async (req, res) => {
   try {
     const today = new Date();
@@ -118,17 +132,17 @@ exports.getDashboardStats = async (req, res) => {
     const femaleCount = allMembers.filter(m => m.gender === 'Female').length;
 
     const todayCollectedFee = allMembers.filter(m => {
-      const feeDate = new Date(m.feeSubmissionDate);
+      const feeDate = new Date(m.FeeSubmissionDate);
       return feeDate >= startOfToday;
     }).length * 3000;
 
     const monthlyCollectedFee = allMembers.filter(m => {
-      const feeDate = new Date(m.feeSubmissionDate);
+      const feeDate = new Date(m.FeeSubmissionDate);
       return feeDate >= startOfMonth;
     }).length * 3000;
 
     const pastMonthsCollectedFee = allMembers.filter(m => {
-      const feeDate = new Date(m.feeSubmissionDate);
+      const feeDate = new Date(m.FeeSubmissionDate);
       return feeDate < startOfMonth;
     }).length * 3000;
 
@@ -166,5 +180,29 @@ exports.getMonthlyEarnings = async (req, res) => {
   } catch (err) {
     console.error('Error calculating monthly earnings:', err);
     res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.updateFeeStatusForOverdue = async (req, res) => {
+  try {
+    const thresholdDate = new Date();
+    thresholdDate.setDate(thresholdDate.getDate() - 29);
+
+    const result = await Member.updateMany(
+      {
+        lastFeeSubmissionDate: { $lt: thresholdDate },
+        FeeStatus: "Paid",
+      },
+      { $set: { FeeStatus: "Unpaid" } }
+    );
+
+    res.status(200).json({
+      message: "Fee status updated for overdue members",
+      matchedCount: result.matchedCount,
+      modifiedCount: result.modifiedCount,
+    });
+  } catch (err) {
+    console.error("Error updating fee status:", err);
+    res.status(500).json({ message: "Server error while updating fee status" });
   }
 };

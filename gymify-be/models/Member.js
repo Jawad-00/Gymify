@@ -6,8 +6,18 @@ const MemberSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   gender: { type: String, enum: ['Male', 'Female'], required: true },
   membershipType: { type: String, enum: ['Basic', 'Premium', 'VIP'], required: true },
-  feeSubmissionDate: { type: Date, required: true },
-  createdAt: { type: Date, default: Date.now }
+  admissionDate: { type: Date, required: true },
+  createdAt: { type: Date, default: Date.now },
+  FeeStatus: {
+    type: String,
+    enum: ['Paid', 'Unpaid'],
+    default: 'Paid',
+  },
+  FeeSubmissionDate: {
+    type: Date,
+    default: Date.now,
+  },
+  lastFeeSubmissionDate: { type: Date, default: Date.now  },
 });
 
 module.exports = mongoose.model('Member', MemberSchema);
