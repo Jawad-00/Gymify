@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../services/api";
-
+import Navbar from "../components/Navbar"; // ✅ navbar import
 export default function MemberForm() {
   const { id } = useParams(); // member id if editing
   const navigate = useNavigate();
@@ -82,10 +82,10 @@ export default function MemberForm() {
   };
 
   return (
+    <>
+      <Navbar /> {/* ✅ Minimal impact addition */}
     <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-3xl font-semibold mb-6 text-center">
-        {id ? "Edit Member" : "Add New Member"}
-      </h1>
+     
 
       {error && (
         <p className="mb-4 text-center text-red-600 font-semibold">{error}</p>
@@ -139,6 +139,7 @@ export default function MemberForm() {
         </form>
       )}
     </div>
+    </>
   );
 }
 
